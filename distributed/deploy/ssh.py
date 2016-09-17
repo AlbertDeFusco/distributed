@@ -5,6 +5,7 @@ import socket
 import os
 import sys
 import traceback
+from collections import Counter
 
 try:
     from queue import Queue
@@ -290,3 +291,26 @@ class SSHCluster(object):
 
     def __exit__(self, *args):
         self.shutdown()
+
+
+class PBSCluster(SSHCluster):
+    def __init__(self, scheduler_port=8786, interface='eth0', nthreads = 0, nprocs = 1, logdir = None):
+        nodefile = os.environ.get('PBS_NODEFILE')
+        if nodefile:
+            with open(nodefile) as f:
+                nodes = Counter(l.strip() for l in f.readlines())
+        else:
+            raise ValueError('Must be run within a PBS job')
+
+        if not nthreads:
+            try:
+                nthreads = os.environ.get('PBS_NUM_PPN')
+            except KeyError:
+                raise ValueError('Could not determine processes per node. Use the nthreads keyword argument')
+
+        #TODO: use a specific interface
+
+        super(SSHCluster, self).__init__(scheduler_addr='localhost', scheduler_port=scheduler_port,
+                worker_addrs=nodes.keys(), nthreads=nthreads, nprocs=nprocs, logdir=logdir)
+
+
