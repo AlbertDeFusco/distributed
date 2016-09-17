@@ -3,6 +3,7 @@ from __future__ import print_function, division, absolute_import
 from .config import config
 from .core import connect, read, write, rpc
 from .deploy import LocalCluster
+from .deploy.ssh import PBSCluster
 from .diagnostics import progress
 from .client import (Client, Executor, CompatibleExecutor, wait, as_completed,
         default_client)
