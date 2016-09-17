@@ -310,7 +310,7 @@ class PBSCluster(SSHCluster):
 
         #TODO: use a specific interface
 
-        super(SSHCluster, self).__init__(scheduler_addr='localhost', scheduler_port=scheduler_port,
+        super(PBSCluster, self).__init__(scheduler_addr='localhost', scheduler_port=scheduler_port,
                 worker_addrs=nodes.keys(), nthreads=nthreads, nprocs=nprocs, logdir=logdir)
 
 
